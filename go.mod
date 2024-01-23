@@ -1,4 +1,4 @@
-module terraform-unattend-iso-provider
+module terraform-provider-unattend-iso
 
 go 1.20
 

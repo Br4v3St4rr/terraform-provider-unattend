@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure UnattendISOProvider satisfies various provider interfaces.
@@ -25,22 +24,16 @@ type UnattendISOProvider struct {
 
 // UnattendISOProviderModel describes the provider data model.
 type UnattendISOProviderModel struct {
-	Endpoint types.String `tfsdk:"location"`
 }
 
 func (p *UnattendISOProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "unattendiso"
+	resp.TypeName = "unattend"
 	resp.Version = p.version
 }
 
 func (p *UnattendISOProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Attributes: map[string]schema.Attribute{
-			"location": schema.StringAttribute{
-				MarkdownDescription: "ISO storage location, defaults to OS tmp.",
-				Optional:            true,
-			},
-		},
+		Attributes: map[string]schema.Attribute{},
 	}
 }
 
@@ -54,9 +47,7 @@ func (p *UnattendISOProvider) Resources(ctx context.Context) []func() resource.R
 }
 
 func (p *UnattendISOProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewExampleDataSource,
-	}
+	return []func() datasource.DataSource{}
 }
 
 func New(version string) func() provider.Provider {

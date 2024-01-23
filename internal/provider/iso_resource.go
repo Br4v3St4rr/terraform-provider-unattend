@@ -42,7 +42,7 @@ type UnattendedISOResourceModel struct {
 }
 
 func (r *UnattendedISOResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "unattend_iso_file"
+	resp.TypeName = req.ProviderTypeName + "_iso_file"
 }
 
 func (r *UnattendedISOResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -135,7 +135,7 @@ func (r *UnattendedISOResource) Create(ctx context.Context, req resource.CreateR
 	}(isoWriter)
 
 	if data.XMLContent.String() != "" {
-		err = isoWriter.AddFile(strings.NewReader(data.XMLContent.String()), "unattend.xml")
+		err = isoWriter.AddFile(strings.NewReader(data.XMLContent.ValueString()), "unattend.xml")
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Error adding file to ISO, got error: %s", err))
 			return
@@ -153,7 +153,7 @@ func (r *UnattendedISOResource) Create(ctx context.Context, req resource.CreateR
 	//sum := fmt.Sprintf("%x", sha256.Sum256(b.Bytes()))
 
 	if data.PathOverride.String() != "tmp" {
-		file, err := os.CreateTemp("/tmp", data.FileName.String())
+		file, err := os.CreateTemp("", data.FileName.ValueString()+"*.iso")
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Error creating tmp file, got error: %s", err))
 			return
@@ -165,7 +165,7 @@ func (r *UnattendedISOResource) Create(ctx context.Context, req resource.CreateR
 		}
 		data.ResultPath = types.StringValue(file.Name())
 	} else {
-		file, err := os.Create(data.PathOverride.String() + data.FileName.String())
+		file, err := os.Create(data.PathOverride.String() + data.FileName.String() + ".iso")
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Error creating file, got error: %s", err))
 			return

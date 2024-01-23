@@ -9,7 +9,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"terraform-unattend-iso-provider/internal/provider"
+	"terraform-provider-unattend-iso/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
@@ -39,7 +39,7 @@ func main() {
 
 	opts := providerserver.ServeOpts{
 		// TODO: Update this string with the published name of your provider.
-		Address: "Br4v3St4rr/unattend-iso",
+		Address: "registry.terraform.io/Br4v3St4rr/unattend-iso",
 		Debug:   debug,
 	}
 
