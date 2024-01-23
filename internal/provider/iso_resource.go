@@ -6,6 +6,8 @@ package provider
 import (
 	"bytes"
 	"context"
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -115,7 +117,9 @@ func (r *UnattendedISOResource) Create(ctx context.Context, req resource.CreateR
 
 	// For the purposes of this example code, hardcoding a response value to
 	// save into the Terraform state.
-	data.Id = types.StringValue("example-id")
+	hash := sha1.New()
+	hash.Write([]byte(data.XMLContent.ValueString() + data.FileName.ValueString() + data.PathOverride.ValueString()))
+	data.Id = types.StringValue(hex.EncodeToString(hash.Sum(nil)))
 
 	// Write logs using the tflog package
 	// Documentation: https://terraform.io/plugin/log
