@@ -1,0 +1,68 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
+package provider
+
+import (
+	"context"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
+	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
+
+// Ensure UnattendISOProvider satisfies various provider interfaces.
+var _ provider.Provider = &UnattendISOProvider{}
+
+// UnattendISOProvider defines the provider implementation.
+type UnattendISOProvider struct {
+	// version is set to the provider version on release, "dev" when the
+	// provider is built and ran locally, and "test" when running acceptance
+	// testing.
+	version string
+}
+
+// UnattendISOProviderModel describes the provider data model.
+type UnattendISOProviderModel struct {
+	Endpoint types.String `tfsdk:"location"`
+}
+
+func (p *UnattendISOProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
+	resp.TypeName = "unattendiso"
+	resp.Version = p.version
+}
+
+func (p *UnattendISOProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"location": schema.StringAttribute{
+				MarkdownDescription: "ISO storage location, defaults to OS tmp.",
+				Optional:            true,
+			},
+		},
+	}
+}
+
+func (p *UnattendISOProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+}
+
+func (p *UnattendISOProvider) Resources(ctx context.Context) []func() resource.Resource {
+	return []func() resource.Resource{
+		NewUnattendedISOResource,
+	}
+}
+
+func (p *UnattendISOProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+	return []func() datasource.DataSource{
+		NewExampleDataSource,
+	}
+}
+
+func New(version string) func() provider.Provider {
+	return func() provider.Provider {
+		return &UnattendISOProvider{
+			version: version,
+		}
+	}
+}
